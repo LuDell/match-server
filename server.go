@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	addr = flag.String("addr", "192.168.40.207:8997", "server address")
+	addr = flag.String("addr", "127.0.0.1:8997", "server address")
 )
 
 type Echo int
