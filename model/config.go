@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"github.com/cihub/seelog"
+	"github.com/go-redis/redis"
 	"os"
 	"time"
 )
@@ -30,13 +31,7 @@ func initConfig() *Config {
 }
 
 type Config struct {
-	Redis struct {
-		Tcp string
-		Port string
-		Password string
-		Max_idle int
-		Max_active int
-	}
+	Redis redis.ClusterOptions
 	Mongo struct {
 		Tcp string
 		Port string
