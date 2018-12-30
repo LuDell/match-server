@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cihub/seelog"
-	"github.com/gomodule/redigo/redis"
-	"log"
-	"os"
 	"match-server/model"
 	"match-server/utils"
+	"os"
 	"strconv"
 	"testing"
 	"time"
@@ -51,51 +49,36 @@ func Test_config(test *testing.T)  {
 }
 
 func Test_pub(test *testing.T)  {
-	con := utils.RedisPool.Get()
-	psc := redis.PubSubConn{con}
-
-	psc.Subscribe("hello")
-
-	for {
-		switch v := psc.Receive().(type) {
-		case redis.Message:
-			fmt.Printf("%s: message: %s\n", v.Channel, v.Data)
-		case redis.Subscription:
-			fmt.Printf("%s: %s %d\n", v.Channel, v.Kind, v.Count)
-		case error:
-			fmt.Printf(v.Error())
-		}
+	// Publish a message.
+	err := utils.Client.Publish("mychannel1", "hello").Err()
+	if err != nil {
+		panic(err)
 	}
+
+
 }
 
 
 func Test_sub(test *testing.T)  {
-	con := utils.RedisPool.Get()
+	pubsub := utils.Client.Subscribe("mychannel1")
 
-	con.Send("SUBSCRIBE","hello")
-	con.Flush()
+	// Wait for confirmation that subscription is created before publishing anything.
+	_, err := pubsub.Receive()
+	if err != nil {
+		panic(err)
+	}
 
-	for {
-		reply, err := redis.Values(con.Receive())
-		if err != nil {
-			log.Println("Receive failed:", err)
-		}
+	// Go channel which receives messages.
+	ch := pubsub.Channel()
 
-		log.Println("reply:", reply)
+	time.AfterFunc(time.Second, func() {
+		// When pubsub is closed channel is closed too.
+		_ = pubsub.Close()
+	})
 
-		for i, v := range reply {
-
-			switch vv := v.(type) {
-			case int64:
-				log.Println(i, ":", vv)
-			case []byte:
-				log.Println(i, ":", string(vv))
-			case string:
-				log.Println(i, ":", vv)
-			default:
-				log.Println("unknown:", v)
-			}
-		}
+	// Consume messages.
+	for msg := range ch {
+		fmt.Println(msg.Channel, msg.Payload)
 	}
 
 }

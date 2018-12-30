@@ -34,12 +34,9 @@ func Login_in(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "用户未注册"})
 		return
 	}
-	conn := utils.RedisPool.Get()
-	//释放redis资源
-	defer conn.Close()
 	//转化json
 	jsons,_ :=json.Marshal(user)
-	_,err2 := conn.Do("SET","user_"+user.Id_.Hex(),jsons,"EX",45*60)
+	_,err2 := utils.Client.Do("SET","user_"+user.Id_.Hex(),jsons,"EX",45*60).Result()
 	if err2 != nil {logger.Info(err2)}
 	ctx.JSON(http.StatusOK,"OK")
 }

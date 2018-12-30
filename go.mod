@@ -8,11 +8,11 @@ require (
 	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
+	github.com/go-redis/redis v6.15.0+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gogo/protobuf v1.2.0 // indirect
 	github.com/gohouse/gorose v1.0.4
 	github.com/golang/mock v1.2.0 // indirect
-	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/websocket v1.4.0
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/json-iterator/go v1.1.5 // indirect
