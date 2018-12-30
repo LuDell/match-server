@@ -1,16 +1,16 @@
 package utils
 
 import (
-	_"github.com/go-sql-driver/mysql"
-	"github.com/gohouse/gorose"
-	"github.com/cihub/seelog"
 	"fmt"
+	"github.com/cihub/seelog"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gohouse/gorose"
 	"match-server/model"
 )
 
 var Conn *gorose.Connection
 
-func _init()  {
+func init()  {
 	Conn = loadCon()
 }
 func loadCon() *gorose.Connection {
