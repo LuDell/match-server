@@ -10,7 +10,7 @@ import (
 
 var Conn *gorose.Connection
 
-func init()  {
+func _init()  {
 	Conn = loadCon()
 }
 func loadCon() *gorose.Connection {

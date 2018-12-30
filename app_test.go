@@ -70,8 +70,8 @@ func Test_sub(test *testing.T)  {
 
 	// Go channel which receives messages.
 	ch := pubsub.Channel()
-
-	time.AfterFunc(time.Second, func() {
+	//after 30s close
+	time.AfterFunc(30 *time.Second, func() {
 		// When pubsub is closed channel is closed too.
 		_ = pubsub.Close()
 	})
