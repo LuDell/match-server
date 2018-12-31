@@ -4,28 +4,33 @@ import (
 	"fmt"
 	"github.com/cihub/seelog"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gohouse/gorose"
+	"github.com/go-xorm/core"
+	"github.com/go-xorm/xorm"
 	"match-server/model"
 )
 
-var Conn *gorose.Connection
-
-func init()  {
-	Conn = loadCon()
-}
-func loadCon() *gorose.Connection {
+func DBExchange() *xorm.Engine {
 	var config = model.SeeLogConfig.Mysql
-	var dbConfig = &gorose.DbConfigSingle{
-		Driver:          "mysql",
-		EnableQueryLog:  true,
-		SetMaxOpenConns: 5,
-		SetMaxIdleConns: 3,
-		Prefix:          "",
-		Dsn:             fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8",config.User_name,config.Password,config.Tcp,config.Port,config.Database), // db dsn
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8",config.User_name,config.Password,config.Tcp,config.Port,"exchange")
+
+	engine, err := xorm.NewEngine("mysql", dsn)
+	if(err != nil){
+		seelog.Error("database connection is error",err)
 	}
-	var connection,err = gorose.Open(dbConfig)
-	if err != nil {
-		seelog.Info("mysql connection error=",err)
+	engine.ShowSQL(config.ShowLog)
+	engine.Logger().SetLevel(core.LOG_DEBUG)
+	return engine
+}
+
+func DBContract() *xorm.Engine {
+	var config = model.SeeLogConfig.Mysql
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8",config.User_name,config.Password,config.Tcp,config.Port,"contract")
+
+	engine, err := xorm.NewEngine("mysql", dsn)
+	if(err != nil){
+		seelog.Error("database connection is error",err)
 	}
-	return connection
+	engine.ShowSQL(config.ShowLog)
+	engine.Logger().SetLevel(core.LOG_DEBUG)
+	return engine
 }

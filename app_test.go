@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cihub/seelog"
+	"match-server/dboperate"
 	"match-server/model"
 	"match-server/utils"
 	"os"
@@ -84,7 +85,7 @@ func Test_sub(test *testing.T)  {
 }
 
 func TestMQ(test *testing.T)  {
-	var connection = utils.MQConn
+	var connection = utils.LoadMQConn()
 	defer connection.Close()
 
 	var channel,_ = connection.Channel()
@@ -117,5 +118,18 @@ func TestMQ(test *testing.T)  {
 	seelog.Info(" [*] Waiting for messages. To exit press CTRL+C")
 
 	 <-forever
+}
+
+func Test(test *testing.T)  {
+	age,_ := utils.Client.Do("get","age").Int()
+	fmt.Println(age)
+	name,_ := utils.Client.Do("get","name").String()
+	fmt.Println(name)
+	var resultList,_ = utils.DBExchange().Query("select * from account")
+	fmt.Println(string(resultList[0]["id"]))
+
+	balance := dboperate.SearchInfo(127001,2160001,false)
+	fmt.Println("数据库资产=",balance)
+
 }
 

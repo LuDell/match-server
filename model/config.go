@@ -51,6 +51,6 @@ type Config struct {
 		Port string
 		User_name string
 		Password string
-		Database string
+		ShowLog bool
 	}
 }
