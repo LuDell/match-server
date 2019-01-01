@@ -14,11 +14,3 @@ var (
 func (p *Persist)DataPersistence() error {
 	
 }
-
-func (p *Persist)CheckTrade(t *model.Trade) *bool {
-
-}
-
-func (p *Persist)ChargeFee(trade *model.Trade) (uint,error) {
-	 
-}

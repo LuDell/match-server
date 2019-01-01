@@ -21,6 +21,6 @@ func main() {
 	flag.Parse()
 
 	s := server.NewServer()
-	s.RegisterName("echo", new(Echo), "")
+	s.RegisterName("Echo", new(Echo), "")
 	s.Serve("tcp", *addr)
 }

@@ -16,3 +16,13 @@ type Trade struct {
 	Ctime int
 	Token string
 }
+
+func (t *Trade)CheckTrade(bidOrder Order,askOrder Order) *bool {
+
+}
+
+func (t *Trade)chargeFee(order Order) (uint,error) {
+	if t.TrendSide == order.Side {
+
+	}
+}
