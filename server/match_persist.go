@@ -12,5 +12,5 @@ var (
 )
 
 func (p *Persist)DataPersistence() error {
-	
+	return nil
 }

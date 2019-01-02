@@ -1,4 +1,4 @@
-package dboperate
+package server
 
 import (
 	"github.com/cihub/seelog"
