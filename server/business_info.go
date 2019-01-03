@@ -2,9 +2,9 @@ package server
 
 import (
 	"github.com/cihub/seelog"
-	"github.com/go-xorm/builder"
 	"match-server/model"
 	"match-server/utils"
+	"strings"
 )
 
 type Trade struct {
@@ -24,7 +24,6 @@ type Trade struct {
 	Token string
 }
 
-var err error
 
 var (
 	BidOrder model.Order
@@ -34,11 +33,12 @@ var (
 )
 
 func (t *Trade)CheckTrade() bool {
-	BidOrder,err = SearchOrderById(t.BidId)
+	var err error
+	BidOrder,err = t.SearchOrderById(t.BidId)
 	if err != nil {
 		panic(err)
 	}
-	AskOrder,err = SearchOrderById(t.AskId)
+	AskOrder,err = t.SearchOrderById(t.AskId)
 	if err != nil {
 		panic(err)
 	}
@@ -48,9 +48,10 @@ func (t *Trade)CheckTrade() bool {
 	return true
 }
 
-func SearchOrderById(id uint) (model.Order, error) {
+func (t *Trade)SearchOrderById(id uint) (model.Order, error) {
 	var order model.Order
-	err := utils.DBContract().Where(builder.Eq{"id":id}).Find(&order)
+	sql := "select * from co_order_"+ strings.ToLower(t.Symbol) +" where id = ?"
+	err := utils.DBContract().SQL(sql, id).Find(&order)
 	if err != nil {
 		seelog.Error("order not exists",err)
 		return order,err
