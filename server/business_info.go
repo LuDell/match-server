@@ -26,29 +26,27 @@ type Trade struct {
 
 var err error
 
-var BidOrder model.Order
-var AskOrder model.Order
-var BidBalance float64
-var AskBalance float64
+var (
+	BidOrder model.Order
+ 	AskOrder model.Order
+ 	BidBalance float64
+ 	AskBalance float64
+)
 
-func (t *Trade)CheckTrade(bidOrder model.Order,askOrder model.Order) bool {
-	BidOrder,err = SearchOrderById(bidOrder.Id)
+func (t *Trade)CheckTrade() bool {
+	BidOrder,err = SearchOrderById(t.BidId)
 	if err != nil {
 		panic(err)
 	}
-	AskOrder,err = SearchOrderById(bidOrder.Id)
+	AskOrder,err = SearchOrderById(t.AskId)
 	if err != nil {
 		panic(err)
 	}
+	askFee := t.chargeFee(&AskOrder)
+	bidFee := t.chargeFee(&BidOrder)
+
+	BidBalance =
 	return true
-}
-
-func (t *Trade)chargeFee(order model.Order) float64 {
-	var feeRate = order.FeeRateMaker
-	if t.TrendSide == order.Side {
-		feeRate = order.FeeRateTaker
-	}
-	return float64(t.Volume) * feeRate
 }
 
 func SearchOrderById(id uint) (model.Order, error) {
@@ -59,4 +57,12 @@ func SearchOrderById(id uint) (model.Order, error) {
 		return order,err
 	}
 	return order,nil
+}
+
+func (t *Trade)chargeFee(order *model.Order) float64 {
+	var feeRate = order.FeeRateMaker
+	if t.TrendSide == order.Side {
+		feeRate = order.FeeRateTaker
+	}
+	return float64(t.Volume) * t.Price * feeRate
 }
