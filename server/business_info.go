@@ -42,10 +42,9 @@ func (t *Trade)CheckTrade() bool {
 	if err != nil {
 		panic(err)
 	}
-	askFee := t.chargeFee(&AskOrder)
-	bidFee := t.chargeFee(&BidOrder)
+	t.chargeFee(&AskOrder)
+	t.chargeFee(&BidOrder)
 
-	BidBalance =
 	return true
 }
 
