@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/smallnest/rpcx/server"
+	"match-server/service"
 )
 
 var (
@@ -19,7 +20,7 @@ func (t *Echo) Echo(ctx context.Context, args []byte, reply *[]byte) error {
 
 func main() {
 	flag.Parse()
-
+	service.In()
 	s := server.NewServer()
 	s.RegisterName("Echo", new(Echo), "")
 	s.Serve("tcp", *addr)

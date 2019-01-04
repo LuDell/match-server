@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/cihub/seelog"
 	"match-server/model"
-	"match-server/server"
+	"match-server/service"
 	"match-server/utils"
 	"os"
 	"strconv"
@@ -126,7 +126,7 @@ func Test(test *testing.T)  {
 	var resultList,_ = utils.DBExchange().Query("select * from account")
 	fmt.Println(string(resultList[0]["id"]))
 
-	balance := server.SearchInfo(127001,2160001,false)
+	balance := service.SearchInfo(127001,2160001,false)
 	fmt.Println("数据库资产=",balance)
 
 }
