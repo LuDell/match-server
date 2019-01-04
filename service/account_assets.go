@@ -27,14 +27,3 @@ func UpdateBalance(uid uint, acc_type uint, amount float64)  {
 	}
 	panic(err)
 }
-
-func FindAccountType(symbol string) []uint {
-	var sql = "select * from config_account_type"
-	resList,_ := utils.DBExchange().QueryInterface(sql)
-	for _,val := range resList {
-		if val["symbol"] == symbol {
-
-		}
-	}
-	return nil
-}
