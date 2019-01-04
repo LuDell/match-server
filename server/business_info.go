@@ -26,43 +26,39 @@ type Trade struct {
 
 
 var (
-	BidOrder model.Order
- 	AskOrder model.Order
+	BidOrder *model.Order
+ 	AskOrder *model.Order
  	BidBalance float64
  	AskBalance float64
 )
 
 func (t *Trade)CheckTrade() bool {
-	var err error
-	BidOrder,err = t.SearchOrderById(t.BidId)
-	if err != nil {
-		panic(err)
-	}
-	AskOrder,err = t.SearchOrderById(t.AskId)
-	if err != nil {
-		panic(err)
-	}
-	t.chargeFee(&AskOrder)
-	t.chargeFee(&BidOrder)
+	//获取买单
+	BidOrder = t.SearchOrderById(t.BidId)
+	//获取卖单
+	AskOrder= t.SearchOrderById(t.AskId)
+
+	t.chargeOrder(AskOrder)
+	t.chargeOrder(BidOrder)
 
 	return true
 }
 
-func (t *Trade)SearchOrderById(id uint) (model.Order, error) {
+func (t *Trade)SearchOrderById(id uint) *model.Order {
 	var order model.Order
 	sql := "select * from co_order_"+ strings.ToLower(t.Symbol) +" where id = ?"
-	err := utils.DBContract().SQL(sql, id).Find(&order)
-	if err != nil {
+	if err := utils.DBContract().SQL(sql, id).Find(&order); err != nil {
 		seelog.Error("order not exists",err)
-		return order,err
+		return &order
 	}
-	return order,nil
+	return &order
 }
 
-func (t *Trade)chargeFee(order *model.Order) float64 {
+func (t *Trade)chargeOrder(order *model.Order) (float64,bool) {
 	var feeRate = order.FeeRateMaker
 	if t.TrendSide == order.Side {
 		feeRate = order.FeeRateTaker
 	}
-	return float64(t.Volume) * t.Price * feeRate
+	var voIsOk = t.Volume <= order.Volume-order.DealVolume
+	return float64(t.Volume) * t.Price * feeRate, voIsOk
 }
