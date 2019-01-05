@@ -13,17 +13,17 @@ import (
  */
 const (
 	/** 开仓手续费 */
-	FEE_TAKER = "fee_taker"
+	FeeTaker = "fee_taker"
 	/** 开仓手续费 */
-	FEE_MAKER = "fee_maker"
+	FeeMaker = "fee_maker"
 	/** 平多盈亏 */
-	CLOSE_BUY_PROFIT_LOSS = "close_buy_profit_loss"
+	CloseBuyProfitLoss = "close_buy_profit_loss"
 	/** 平空盈亏 */
-	CLOSE_SELL_PROFIT_LOSS = "close_sell_profit_loss"
+	CloseSellProfitLoss = "close_sell_profit_loss"
 	/** 撮合成交爆仓单多仓盈利注入风险准备金 */
-	INJECT_RISK_BLANCE_BUY = "inject_risk_blance_buy"
+	InjectRiskBalanceBuy = "inject_risk_balance_buy"
 	/** 撮合成交爆仓单空仓盈利注入风险准备金 */
-	INJECT_RISK_BLANCE_SELL = "inject_risk_blance_sell"
+	InjectRiskBalanceSell = "inject_risk_balance_sell"
 )
 
 func SearchBalance(uid uint, acc_type int,isLock bool) (account float64,err error) {
