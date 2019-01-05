@@ -21,7 +21,7 @@ func (t *Echo) Echo(ctx context.Context, args []byte, reply *[]byte) error {
 func main() {
 	flag.Parse()
 	//首次加载账户
-	service.LoadAccountType()
+	service.LoadGlobalConf()
 	s := server.NewServer()
 	s.RegisterName("Echo", new(Echo), "")
 	s.Serve("tcp", *addr)

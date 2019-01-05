@@ -14,9 +14,13 @@ const (
 	C_POSITION_CLOSE = "111"
 	U_MARGIN = "216"
 )
-var accountType = map[string]map[string]int{}
 
-func LoadAccountType() {
+//系统交易账户
+var accountType = map[string]map[string]int{}
+//系统用户
+var sysUid = uint(1084)
+
+func LoadGlobalConf() {
 	var err error
 	var sql = "select * from config_account_type"
 	resList,err := utils.DBExchange().QueryString(sql)
