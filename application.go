@@ -23,6 +23,6 @@ func main() {
 	//首次加载账户
 	service.LoadGlobalConf()
 	s := server.NewServer()
-	s.RegisterName("Echo", new(Echo), "")
+	s.RegisterName("DataPersistence", new(service.Persist), "")
 	s.Serve("tcp", *addr)
 }

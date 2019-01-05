@@ -92,15 +92,20 @@ func (t *Trade)searchOrderById(id uint) *model.Order {
 //划转资产
 func (t *Trade)TransferAssets() error {
 	//获取系统手续费账户
-	sysFeeBalance,err := SearchBalance(sysUid,accountType[C_EXCHANGE_FEE][strings.ToUpper(t.Symbol)],true)
-	if err != nil {
-		return err
+	sysFeeBalance,err1 := SearchBalance(sysUid,accountType[C_EXCHANGE_FEE][strings.ToUpper(t.Symbol)],true)
+	if err1 != nil {
+		return err1
 	}
-	//手续费流水
+	//1.手续费流水
 	var bidTrans = t.tradeFee(bidOrder,bidBalance,sysFeeBalance)
 	var askTrans = t.tradeFee(bidOrder,bidBalance,sysFeeBalance)
-	insertTrans(bidTrans,askTrans)
+	//TODO
+	//2.计算平仓收益
 
+	//3.爆仓单风险准备
+
+	_,err2 := insertTrans(bidTrans,askTrans)
+	return err2
 }
 
 
