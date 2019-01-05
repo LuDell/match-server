@@ -9,6 +9,7 @@ require (
 	github.com/go-xorm/core v0.6.0
 	github.com/go-xorm/xorm v0.7.1
 	github.com/google/go-cmp v0.2.0 // indirect
+	github.com/pkg/errors v0.8.0
 	github.com/smallnest/rpcx v0.0.0-20181228102150-00249c214b89
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
 )

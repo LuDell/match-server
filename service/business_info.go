@@ -40,9 +40,14 @@ func (t *Trade)CheckTrade() bool {
 	//获取卖单
 	askOrder= t.searchOrderById(t.AskId)
 	//获取保证金
-	bidBalance = SearchBalance(t.BidUid,accountType[U_MARGIN]["BTC"],false)
-	askBalance = SearchBalance(t.BidUid,accountType[U_MARGIN]["BTC"],false)
-
+	bidBalance,err1 := SearchBalance(t.BidUid,accountType[U_MARGIN]["BTC"],false)
+	if err1!=nil {
+		return false
+	}
+	askBalance,err2 := SearchBalance(t.BidUid,accountType[U_MARGIN]["BTC"],false)
+	if err2!=nil {
+		return false
+	}
 	//校验订单和手续费账户余额
 	if !t.chargeOrder(bidOrder,bidBalance) {
 		return false
@@ -85,9 +90,12 @@ func (t *Trade)searchOrderById(id uint) *model.Order {
 }
 
 //划转资产
-func (t *Trade)TransferAssets()  {
+func (t *Trade)TransferAssets() error {
 	//获取系统手续费账户
-	sysFeeBalance := SearchBalance(sysUid,accountType[C_EXCHANGE_FEE][strings.ToUpper(t.Symbol)],true)
+	sysFeeBalance,err := SearchBalance(sysUid,accountType[C_EXCHANGE_FEE][strings.ToUpper(t.Symbol)],true)
+	if err != nil {
+		return err
+	}
 	//手续费流水
 	var bidTrans = t.tradeFee(bidOrder,bidBalance,sysFeeBalance)
 	var askTrans = t.tradeFee(bidOrder,bidBalance,sysFeeBalance)

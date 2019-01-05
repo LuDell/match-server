@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/cihub/seelog"
+	"github.com/pkg/errors"
 	"match-server/model"
 	"match-server/utils"
 	"strconv"
@@ -25,16 +26,19 @@ const (
 	INJECT_RISK_BLANCE_SELL = "inject_risk_blance_sell"
 )
 
-func SearchBalance(uid uint, acc_type int,isLock bool) float64 {
+func SearchBalance(uid uint, acc_type int,isLock bool) (account float64,err error) {
 	var sql = "select balance from account where uid = ? and type = ?"
 	if isLock {
 		sql += " from update"
 	}
 
-	resultList,_ := utils.DBExchange().SQL(sql,uid,acc_type).QueryString()
-
-	var balance,_ = strconv.ParseFloat(resultList[0]["balance"], 64)
-	return balance
+	resultList,err := utils.DBExchange().SQL(sql,uid,acc_type).QueryString()
+	if err != nil || resultList == nil {
+		seelog.Error("account is not find,uid=",uid," acc_type= ",acc_type)
+		return 0,errors.New("account is not find")
+	}
+	balance,err := strconv.ParseFloat(resultList[0]["balance"], 64)
+	return balance,err
 }
 
 func UpdateBalance(uid uint, acc_type int, amount float64)  {

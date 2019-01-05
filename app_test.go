@@ -126,8 +126,8 @@ func Test(test *testing.T)  {
 	var resultList,_ = utils.DBExchange().Query("select * from account")
 	fmt.Println(string(resultList[0]["id"]))
 
-	balance := service.SearchBalance(127001,2160001,false)
-	fmt.Println("数据库资产=",balance)
+	balance,err := service.SearchBalance(127001,2161001,false)
+	fmt.Println("数据库资产=",balance,err)
 
 }
 
