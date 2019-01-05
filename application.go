@@ -20,7 +20,8 @@ func (t *Echo) Echo(ctx context.Context, args []byte, reply *[]byte) error {
 
 func main() {
 	flag.Parse()
-	service.In()
+	//首次加载账户
+	service.LoadAccountType()
 	s := server.NewServer()
 	s.RegisterName("Echo", new(Echo), "")
 	s.Serve("tcp", *addr)
