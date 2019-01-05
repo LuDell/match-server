@@ -49,12 +49,10 @@ func (t *Trade)CheckTrade() bool {
 		return false
 	}
 	//校验订单和手续费账户余额
-	if !t.chargeOrder(bidOrder,bidBalance) {
+	if !t.chargeOrder(bidOrder,bidBalance) || !t.chargeOrder(askOrder,askBalance) {
 		return false
 	}
-	if !t.chargeOrder(askOrder,askBalance) {
-		return false
-	}
+
 	return true
 }
 
