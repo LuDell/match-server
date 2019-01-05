@@ -40,11 +40,11 @@ func (t *Trade)CheckTrade() bool {
 	//获取卖单
 	askOrder= t.searchOrderById(t.AskId)
 	//获取保证金
-	bidBalance,err1 := SearchBalance(t.BidUid,accountType[UMargin]["BTC"],false)
+	bidBalance,err1 := SearchBalance(t.BidUid,accountType[UMargin]["BTC"],true)
 	if err1!=nil {
 		return false
 	}
-	askBalance,err2 := SearchBalance(t.BidUid,accountType[UMargin]["BTC"],false)
+	askBalance,err2 := SearchBalance(t.BidUid,accountType[UMargin]["BTC"],true)
 	if err2!=nil {
 		return false
 	}
