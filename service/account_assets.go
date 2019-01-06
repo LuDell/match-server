@@ -43,7 +43,7 @@ func SearchBalance(uid uint, acc_type int,isLock bool) (account float64,err erro
 
 func UpdateBalance(uid uint, acc_type int, amount float64) error {
 	var sql = "update account set balance = balance + ? where uid = ? and type = ?"
-	_,err := utils.DBExchange().Exec(sql,amount,uid,acc_type, "xorm")
+	_,err := utils.DBExchange().Exec(sql,amount, uid, acc_type)
 	if err != nil {
 		seelog.Error("account update error, ",err)
 	}

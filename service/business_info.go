@@ -102,7 +102,7 @@ func (t *Trade)TransferAssets() error {
 
 	//3.爆仓单风险准备
 
-	_,err2 := insertTrans(bidTrans,askTrans)
+	err2 := insertTrans(bidTrans,askTrans)
 	return err2
 }
 
