@@ -26,24 +26,24 @@ const (
 	InjectRiskBalanceSell = "inject_risk_balance_sell"
 )
 
-func SearchBalance(uid uint, acc_type int,isLock bool) (account float64,err error) {
+func SearchBalance(uid uint, accType int,isLock bool) (account float64,err error) {
 	var sql = "select balance from account where uid = ? and type = ?"
 	if isLock {
 		sql += " from update"
 	}
 
-	resultList,err := utils.DBExchange().SQL(sql,uid,acc_type).QueryString()
+	resultList,err := utils.DBExchange().SQL(sql,uid, accType).QueryString()
 	if err != nil || resultList == nil {
-		seelog.Error("account is not find,uid=",uid," acc_type= ",acc_type)
+		seelog.Error("account is not find,uid=",uid," acc_type= ", accType)
 		return 0,errors.New("account is not find")
 	}
 	balance,err := strconv.ParseFloat(resultList[0]["balance"], 64)
 	return balance,err
 }
 
-func UpdateBalance(uid uint, acc_type int, amount float64) error {
+func UpdateBalance(uid uint, accType int, amount float64) error {
 	var sql = "update account set balance = balance + ? where uid = ? and type = ?"
-	_,err := utils.DBExchange().Exec(sql,amount, uid, acc_type)
+	_,err := utils.DBExchange().Exec(sql,amount, uid, accType)
 	if err != nil {
 		seelog.Error("account update error, ",err)
 	}

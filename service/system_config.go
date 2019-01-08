@@ -29,32 +29,32 @@ func LoadGlobalConf() {
 		panic("load account type is error")
 	}
 	//手续费账户
-	var c_exchange_fee = map[string]int{}
+	var cExchangeFee = map[string]int{}
 	//风险准备金账户
-	var c_risk_assure = map[string]int{}
+	var cRiskAssure = map[string]int{}
 	//平仓账户
-	var c_position_close = map[string]int{}
+	var cPositionClose = map[string]int{}
 	//保证金账户
-	var u_margin = map[string]int{}
+	var uMargin = map[string]int{}
 	for _,val := range resList {
-		var asset_type,_ = strconv.Atoi(val["asset_type"])
+		var assetType,_ = strconv.Atoi(val["asset_type"])
 		if strings.HasPrefix(val["asset_type"], UMargin) {
-			u_margin[val["coin_symbol"]] = asset_type
+			uMargin[val["coin_symbol"]] = assetType
 		}
 		if strings.HasPrefix(val["asset_type"], CExchangeFee) {
-			c_exchange_fee[val["symbol"]] = asset_type
+			cExchangeFee[val["symbol"]] = assetType
 		}
 		if strings.HasPrefix(val["asset_type"], CRiskAssure) {
-			c_risk_assure[val["coin_symbol"]] = asset_type
+			cRiskAssure[val["coin_symbol"]] = assetType
 		}
 		if strings.HasPrefix(val["asset_type"], CPositionClose) {
-			c_position_close[val["symbol"]] = asset_type
+			cPositionClose[val["symbol"]] = assetType
 		}
 	}
-	accountType[UMargin] = u_margin
-	accountType[CExchangeFee] = c_exchange_fee
-	accountType[CRiskAssure] = c_risk_assure
-	accountType[CPositionClose] = c_position_close
+	accountType[UMargin] = uMargin
+	accountType[CExchangeFee] = cExchangeFee
+	accountType[CRiskAssure] = cRiskAssure
+	accountType[CPositionClose] = cPositionClose
 	jsonByte,_ := json.Marshal(accountType)
 	seelog.Info("load account type ",string(jsonByte))
 }
