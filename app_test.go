@@ -89,11 +89,11 @@ func TestMQ(test *testing.T)  {
 	var channel,_ = connection.Channel()
 	defer channel.Close()
 	//channel.ExchangeDeclare("okay","topic",false,false,false,false,nil)
-	var queue,_ = channel.QueueDeclare("okay_queue",false,false,false,false,nil)
+	//var queue,_ = channel.QueueDeclare("okay_queue",false,false,false,false,nil)
 	//channel.QueueBind("okay_queue","info","okay",false,nil)
 
 	msgs, _ := channel.Consume(
-		 queue.Name,
+		"okay_queue",
 		"smile-by",
 		false,
 		false,
