@@ -5,7 +5,7 @@ require (
 	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
 	github.com/go-redis/redis v6.15.0+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
-	github.com/go-xorm/builder v0.3.3
+	github.com/go-xorm/builder v0.3.3 // indirect
 	github.com/go-xorm/core v0.6.0
 	github.com/go-xorm/xorm v0.7.1
 	github.com/google/go-cmp v0.2.0 // indirect

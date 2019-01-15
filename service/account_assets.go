@@ -13,48 +13,55 @@ import (
  */
 const (
 	/** 开仓手续费 */
-	FEE_TAKER = "fee_taker"
+	FeeTaker = "fee_taker"
 	/** 开仓手续费 */
-	FEE_MAKER = "fee_maker"
+	FeeMaker = "fee_maker"
 	/** 平多盈亏 */
-	CLOSE_BUY_PROFIT_LOSS = "close_buy_profit_loss"
+	CloseBuyProfitLoss = "close_buy_profit_loss"
 	/** 平空盈亏 */
-	CLOSE_SELL_PROFIT_LOSS = "close_sell_profit_loss"
+	CloseSellProfitLoss = "close_sell_profit_loss"
 	/** 撮合成交爆仓单多仓盈利注入风险准备金 */
-	INJECT_RISK_BLANCE_BUY = "inject_risk_blance_buy"
+	InjectRiskBalanceBuy = "inject_risk_balance_buy"
 	/** 撮合成交爆仓单空仓盈利注入风险准备金 */
-	INJECT_RISK_BLANCE_SELL = "inject_risk_blance_sell"
+	InjectRiskBalanceSell = "inject_risk_balance_sell"
 )
 
-func SearchBalance(uid uint, acc_type int,isLock bool) (account float64,err error) {
+func SearchBalance(uid uint, accType int,isLock bool) (account float64,err error) {
 	var sql = "select balance from account where uid = ? and type = ?"
 	if isLock {
 		sql += " from update"
 	}
 
-	resultList,err := utils.DBExchange().SQL(sql,uid,acc_type).QueryString()
+	resultList,err := utils.DBExchange().SQL(sql,uid, accType).QueryString()
 	if err != nil || resultList == nil {
-		seelog.Error("account is not find,uid=",uid," acc_type= ",acc_type)
+		seelog.Error("account is not find,uid=",uid," acc_type= ", accType)
 		return 0,errors.New("account is not find")
 	}
 	balance,err := strconv.ParseFloat(resultList[0]["balance"], 64)
 	return balance,err
 }
 
-func UpdateBalance(uid uint, acc_type int, amount float64)  {
+func UpdateBalance(uid uint, accType int, amount float64) error {
 	var sql = "update account set balance = balance + ? where uid = ? and type = ?"
-	_,err := utils.DBExchange().Exec(sql,amount,uid,acc_type, "xorm")
+	_,err := utils.DBExchange().Exec(sql,amount, uid, accType)
 	if err != nil {
 		seelog.Error("account update error, ",err)
 	}
-	panic(err)
+	return err
 }
 
-func insertTrans(transactions ...*model.Transaction) (int64 ,error) {
-	res,err := utils.DBExchange().Insert(transactions)
+func insertTrans(transactions ...*model.Transaction) error {
+	_,err := utils.DBExchange().Insert(transactions)
 	if err != nil {
 		seelog.Error("transaction insert error",err)
-		return 0,nil
 	}
-	return res,err
+	for _,tran := range transactions {
+		if err := UpdateBalance(tran.FromUid, tran.FromType, -tran.Amount); err!= nil {
+			return err
+		}
+		if err := UpdateBalance(tran.ToUid, tran.ToType, tran.Amount); err!= nil {
+			return err
+		}
+	}
+	return err
 }

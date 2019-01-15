@@ -40,21 +40,19 @@ func (t *Trade)CheckTrade() bool {
 	//获取卖单
 	askOrder= t.searchOrderById(t.AskId)
 	//获取保证金
-	bidBalance,err1 := SearchBalance(t.BidUid,accountType[U_MARGIN]["BTC"],false)
+	bidBalance,err1 := SearchBalance(t.BidUid,accountType[UMargin]["BTC"],true)
 	if err1!=nil {
 		return false
 	}
-	askBalance,err2 := SearchBalance(t.BidUid,accountType[U_MARGIN]["BTC"],false)
+	askBalance,err2 := SearchBalance(t.BidUid,accountType[UMargin]["BTC"],true)
 	if err2!=nil {
 		return false
 	}
 	//校验订单和手续费账户余额
-	if !t.chargeOrder(bidOrder,bidBalance) {
+	if !t.chargeOrder(bidOrder,bidBalance) || !t.chargeOrder(askOrder,askBalance) {
 		return false
 	}
-	if !t.chargeOrder(askOrder,askBalance) {
-		return false
-	}
+
 	return true
 }
 
@@ -92,7 +90,7 @@ func (t *Trade)searchOrderById(id uint) *model.Order {
 //划转资产
 func (t *Trade)TransferAssets() error {
 	//获取系统手续费账户
-	sysFeeBalance,err1 := SearchBalance(sysUid,accountType[C_EXCHANGE_FEE][strings.ToUpper(t.Symbol)],true)
+	sysFeeBalance,err1 := SearchBalance(sysUid,accountType[CExchangeFee][strings.ToUpper(t.Symbol)],true)
 	if err1 != nil {
 		return err1
 	}
@@ -104,7 +102,7 @@ func (t *Trade)TransferAssets() error {
 
 	//3.爆仓单风险准备
 
-	_,err2 := insertTrans(bidTrans,askTrans)
+	err2 := insertTrans(bidTrans,askTrans)
 	return err2
 }
 
@@ -115,23 +113,23 @@ func (t *Trade)tradeFee(order *model.Order,marginBalance float64,sysFeeBalance f
 	var feeTrans = model.Transaction{}
 	if orderFee >0 {
 		feeTrans.FromUid = order.Uid
-		feeTrans.FromType = accountType[U_MARGIN][strings.ToUpper(t.Symbol)]
+		feeTrans.FromType = accountType[UMargin][strings.ToUpper(t.Symbol)]
 		feeTrans.FromBalance = marginBalance - math.Abs(orderFee)
 		feeTrans.ToUid = sysUid
-		feeTrans.ToType = accountType[C_EXCHANGE_FEE][strings.ToUpper(t.Symbol)]
+		feeTrans.ToType = accountType[CExchangeFee][strings.ToUpper(t.Symbol)]
 		feeTrans.ToBalance = sysFeeBalance + math.Abs(orderFee)
 	}else{
 		feeTrans.ToUid = order.Uid
-		feeTrans.ToType = accountType[U_MARGIN][strings.ToUpper(t.Symbol)]
+		feeTrans.ToType = accountType[UMargin][strings.ToUpper(t.Symbol)]
 		feeTrans.ToBalance = marginBalance - math.Abs(orderFee)
 		feeTrans.FromUid = sysUid
-		feeTrans.FromType = accountType[C_EXCHANGE_FEE][strings.ToUpper(t.Symbol)]
+		feeTrans.FromType = accountType[CExchangeFee][strings.ToUpper(t.Symbol)]
 		feeTrans.FromBalance = sysFeeBalance + math.Abs(orderFee)
 	}
 	feeTrans.Amount = math.Abs(orderFee)
 	feeTrans.Meta = "交易手续费"
-	feeTrans.Scene = FEE_MAKER
-	if isTaker {feeTrans.Scene = FEE_TAKER}
+	feeTrans.Scene = FeeMaker
+	if isTaker {feeTrans.Scene = FeeTaker}
 	feeTrans.RefType = t.Symbol
 	feeTrans.RefId = order.Id
 	feeTrans.Op_uid = 0
