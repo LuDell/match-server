@@ -26,6 +26,7 @@ type Trade struct {
 	Token string
 }
 
+//校验订单
 func (t *Trade)chargeOrder(order *model.Order,balance float64) bool {
 	//订单未成交数量和当前trade
 	var voIsOk = t.Volume <= order.Volume-order.DealVolume
@@ -74,6 +75,7 @@ func (t *Trade)tradeFee(order *model.Order) *model.Transaction{
 	return &feeTrans
 }
 
+//平仓划转收益
 func (t *Trade)closePo(o *model.Order,p *model.Position) *model.Transaction {
 	//判断平仓
 	if !strings.EqualFold(o.Side,p.Side) {
@@ -110,6 +112,38 @@ func (t *Trade)closePo(o *model.Order,p *model.Position) *model.Transaction {
 	return nil
 }
 
+//爆仓单划转收益(风险准备金)
+func (t *Trade)riskReserve(o *model.Order) *model.Transaction {
+	//系统爆仓用户
+	var riskBalance float64
+	if o.Uid == sysUid {
+		//爆仓单（买单）收益 = （爆仓单价格 - 成交交割）* 数量 * 乘数
+		if strings.EqualFold(o.Side,Buy) {
+			riskBalance = float64(t.Volume) * (o.Price - t.Price)
+		}else {
+			riskBalance = float64(t.Volume) * (t.Price - o.Price)
+		}
+	}
+	//收益大于0
+	if riskBalance > 0 {
+		var transaction = model.Transaction{}
+		transaction.FromUid = o.Uid
+		transaction.FromType = accountType[UMargin]["BTC"]
+		transaction.Amount = riskBalance
+		transaction.ToUid = sysUid
+		transaction.ToType = accountType[CRiskAssure]["BTC"]
+		transaction.Mtime = time.Now().Unix()
+		transaction.Ctime = time.Now().Unix()
+		transaction.Op_uid = 0
+		transaction.Op_ip = ""
+		transaction.RefType = "co_order_"+strings.ToLower(t.Symbol)
+		transaction.RefId = o.Id
+		transaction.Scene = utils.If(o.Side == Buy,InjectRiskBalanceSell,InjectRiskBalanceBuy).(string)
+		transaction.Meta = utils.If(o.Side == Buy,InjectRiskBalanceSell,InjectRiskBalanceBuy).(string)
+		return &transaction
+	}
+	return nil
+}
 
 
 //查询订单

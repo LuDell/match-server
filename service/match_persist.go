@@ -26,7 +26,7 @@ func (p *Persist)DataPersistence(ctx context.Context, args []byte, reply *[]byte
 	err := json.Unmarshal(args,&trade)
 	if err != nil {
 		seelog.Error("trade unmarshal is error")
-		return err;
+		return err
 	}
 
 	bool := trade.CheckTrade()
@@ -78,8 +78,12 @@ func (t *Trade)TransferAssets() error {
 	bidCloTrans := t.closePo(bidOrder,bidPo)
 	askCloTrans := t.closePo(askOrder,askPo)
 	//3.爆仓单划转收益到风险准备金
+	bidRiskTrans := t.riskReserve(bidOrder)
+	askRiskTrans := t.riskReserve(askOrder)
+	//4.更新仓位
 
+	//5.更新订单、成交记录
 
-	err2 := insertTrans(bidTrans,askTrans,bidCloTrans,askCloTrans)
+	err2 := insertTrans(bidTrans,askTrans,bidCloTrans,askCloTrans,bidRiskTrans,askRiskTrans)
 	return err2
 }
