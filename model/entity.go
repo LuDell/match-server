@@ -1,6 +1,30 @@
 package model
 
-type CoPosition struct {
+type Order struct {
+	Id  uint
+	Uid uint
+	ContractId uint
+	UnitQuantity float64
+	Side string
+	Action string
+	Price float64
+	Volume uint
+	FeeRateMaker float64
+	FeeRateTaker float64
+	DealVolume uint
+	LeverageLevel uint
+	AvgPrice float64
+	RealizedAmount float64
+	Status uint8
+	Type uint8
+	Ctime int64
+	Mtime int64
+	Source uint8
+	OperType uint8
+	OriginOid uint
+}
+
+type Position struct {
 
 	Id uint
 
@@ -78,4 +102,28 @@ type CoPosition struct {
 	 * 更新时间
 	 */
 	Mtime int64
+}
+
+type Transaction struct {
+	Id uint
+	FromUid uint
+	FromType int
+	FromBalance float64
+	ToUid uint
+	ToType int
+	ToBalance float64
+	Amount float64
+	Meta string
+	Scene string
+	RefType string
+	RefId uint
+	Op_uid uint
+	Op_ip string
+	Ctime int64
+	Mtime int64
+	Fingerprint string
+}
+
+type Trade struct {
+
 }

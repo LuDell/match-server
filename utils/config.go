@@ -1,4 +1,4 @@
-package model
+package utils
 
 import (
 	"encoding/json"
@@ -8,10 +8,10 @@ import (
 	"time"
 )
 
-var SeeLogConfig *Config
+var seeLogConfig *Config
 
 func init()  {
-	SeeLogConfig = initConfig()
+	seeLogConfig = initConfig()
 }
 
 func initConfig() *Config {
