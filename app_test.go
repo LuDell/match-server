@@ -4,13 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cihub/seelog"
-	"match-server/model"
 	"match-server/service"
 	"match-server/utils"
-	"math"
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 )
@@ -41,7 +38,7 @@ func Test_config(test *testing.T)  {
 		seelog.Error("读取配置文件错误", err1)
 	}
 	decoder := json.NewDecoder(file)
-	config := model.Config{}
+	config := utils.Config{}
 	err2:= decoder.Decode(&config)
 	if err2 !=nil{
 		seelog.Error("数据绑定错误",err2)
